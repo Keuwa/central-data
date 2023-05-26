@@ -7,39 +7,39 @@ import { getAuth, EmailAuthProvider, Config } from 'firebase/auth'
 // so we don't need to.
 
 const firebaseAuthConfig = {
-  signInFlow: 'popup',
-  // Auth providers
-  // https://github.com/firebase/firebaseui-web#configure-oauth-providers
-  signInOptions: [
-    {
-      provider: EmailAuthProvider.PROVIDER_ID,
-      requireDisplayName: false,
-    },
-  ],
-  signInSuccessUrl: '/',
-  credentialHelper: 'none',
+    signInFlow: 'popup',
+    // Auth providers
+    // https://github.com/firebase/firebaseui-web#configure-oauth-providers
+    signInOptions: [
+        {
+            provider: EmailAuthProvider.PROVIDER_ID,
+            requireDisplayName: false,
+        },
+    ],
+    signInSuccessUrl: '/',
+    credentialHelper: 'none',
   
 }
 
 const FirebaseAuth = () => {
-  // Do not SSR FirebaseUI, because it is not supported.
-  // https://github.com/firebase/firebaseui-web/issues/213
-  const [renderAuth, setRenderAuth] = useState(false)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setRenderAuth(true)
-    }
-  }, [])
-  return (
-    <div>
-      {renderAuth ? (
-        <StyledFirebaseAuth 
-          uiConfig={firebaseAuthConfig}
-          firebaseAuth={getAuth()}
-        />
-      ) : null}
-    </div>
-  )
+    // Do not SSR FirebaseUI, because it is not supported.
+    // https://github.com/firebase/firebaseui-web/issues/213
+    const [renderAuth, setRenderAuth] = useState(false)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setRenderAuth(true)
+        }
+    }, [])
+    return (
+        <div>
+            {renderAuth ? (
+                <StyledFirebaseAuth 
+                    uiConfig={firebaseAuthConfig}
+                    firebaseAuth={getAuth()}
+                />
+            ) : null}
+        </div>
+    )
 }
 
 export default FirebaseAuth
