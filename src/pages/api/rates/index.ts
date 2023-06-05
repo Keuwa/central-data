@@ -1,10 +1,10 @@
-import { firebaseAdmin } from "../../../firebase/firebaseAdmin";
-import { converter } from "../../../database/firebaseConverter";
+import { firebaseAdmin } from '../../../firebase/firebaseAdmin'
+import { converter } from '../../../database/firebaseConverter'
 
-import type { NextApiRequest, NextApiResponse } from "next";
-import { Rate } from "../../../database/entity/rate";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { Rate } from '../../../database/entity/rate'
 // import Cors from "cors";
-import NextCors from "nextjs-cors";
+import NextCors from 'nextjs-cors'
 
 // const cors = Cors({
 //   methods: ["GET", "POST", "UPDATE", "DELETE", "HEAD", "OPTION"],
@@ -18,52 +18,51 @@ function runMiddleware(
 ) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result: any) => {
-      console.log(result);
       if (result instanceof Error) {
-        return reject(result);
+        return reject(result)
       }
 
-      return resolve(result);
-    });
-  });
+      return resolve(result)
+    })
+  })
 }
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   switch (req.method) {
-    case "GET":
+    case 'GET':
       let getResult = await new Promise(async (resolve) => {
-        const { year, city } = req.query;
-        let data = await getRates(city, year);
-        resolve(data);
-      });
-      res.status(200).json(getResult);
-      break;
-    case "POST":
+        const { year, city } = req.query
+        let data = await getRates(city, year)
+        resolve(data)
+      })
+      res.status(200).json(getResult)
+      break
+    case 'POST':
       let postResult = await new Promise(async (resolve) => {
-        let data = await addRate(req.body);
-        resolve(data);
-      });
-      res.status(200).json(postResult);
-      break;
-    case "PUT":
+        let data = await addRate(req.body)
+        resolve(data)
+      })
+      res.status(200).json(postResult)
+      break
+    case 'PUT':
       let updatedPost = await new Promise(async (resolve) => {
-        let data = await updateRates(req.body);
-        resolve(data);
-      });
-      res.status(200).json(updatedPost);
-      break;
-    case "DELETE":
+        let data = await updateRates(req.body)
+        resolve(data)
+      })
+      res.status(200).json(updatedPost)
+      break
+    case 'DELETE':
       let deletedPost = await new Promise(async (resolve) => {
-        let data = await deleteRates(req.body);
-        resolve(data);
-      });
-      res.status(200).json(deletedPost);
-      break;
+        let data = await deleteRates(req.body)
+        resolve(data)
+      })
+      res.status(200).json(deletedPost)
+      break
     default:
-      res.status(401).json({ error: "Method not allowed" });
-      break;
+      res.status(401).json({ error: 'Method not allowed' })
+      break
   }
 }
 
@@ -71,48 +70,48 @@ export async function getRates(
   cityInseeCode?: string | string[],
   year?: string | string[]
 ): Promise<Array<Rate>> {
-  let rates: Array<Rate> = [];
+  let rates: Array<Rate> = []
   try {
-    const db = firebaseAdmin.firestore();
-    let ref = db.collection("rates");
-    let query = ref.orderBy("year");
+    const db = firebaseAdmin.firestore()
+    let ref = db.collection('rates')
+    let query = ref.orderBy('year')
     if (cityInseeCode) {
-      if (typeof cityInseeCode === "string") {
-        query = ref.where("city", "==", cityInseeCode);
+      if (typeof cityInseeCode === 'string') {
+        query = ref.where('city', '==', cityInseeCode)
       } else {
-        query = ref.where("city", "in", cityInseeCode);
+        query = ref.where('city', 'in', cityInseeCode)
       }
       if (year) {
-        if (typeof year === "string") {
-          query = query.where("year", "==", year);
+        if (typeof year === 'string') {
+          query = query.where('year', '==', year)
         } else {
-          query = query.where("year", "in", year);
+          query = query.where('year', 'in', year)
         }
       }
     } else if (year) {
-      if (typeof year === "string") {
-        query = query.where("year", "==", year);
+      if (typeof year === 'string') {
+        query = query.where('year', '==', year)
       } else {
-        query = query.where("year", "in", year);
+        query = query.where('year', 'in', year)
       }
     }
 
-    const snapshot = await query.get();
+    const snapshot = await query.get()
 
     snapshot.forEach((doc) => {
       let rate: Rate = {
         firebaseID: doc.id,
         ...doc.data(),
         getHeader: function (): string[] {
-          throw new Error("Function not implemented.");
+          throw new Error('Function not implemented.')
         },
-      };
-      rates.push(rate);
-    });
-    return rates;
+      }
+      rates.push(rate)
+    })
+    return rates
   } catch (e) {
-    console.error(e);
-    throw e;
+    console.error(e)
+    throw e
   }
 }
 
@@ -120,48 +119,48 @@ export function addRate(rate: Rate) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection("rates")
+      .collection('rates')
       .withConverter(converter())
       .add(rate)
       .then((data) => {
-        resolve({ id: data.id, ...rate });
+        resolve({ id: data.id, ...rate })
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
+        reject(error)
+      })
+  })
 }
 
 export function updateRates(rate: Rate) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection("rates")
+      .collection('rates')
       .doc(rate.firebaseID)
       .withConverter(converter())
       .update(rate)
       .then((data) => {
-        resolve(data);
+        resolve(data)
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
+        reject(error)
+      })
+  })
 }
 
 export function deleteRates(rate: Rate) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection("rates")
+      .collection('rates')
       .doc(rate.firebaseID)
       .withConverter(converter())
       .delete()
       .then((data) => {
-        resolve(data);
+        resolve(data)
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
+        reject(error)
+      })
+  })
 }

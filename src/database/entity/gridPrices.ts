@@ -1,25 +1,25 @@
-import CSVParsable from "../CSVParsable";
-import { Entity } from "../entities";
+import CSVParsable from '../CSVParsable'
+import { Entity } from '../entities'
 
 export class GridPrices extends CSVParsable implements Entity {
-  firebaseID: string = "";
-  category?: string;
-  sector?: string;
-  date?: Date;
-  price?: number;
+  firebaseID: string = ''
+  category?: string
+  sector?: string
+  date?: Date
+  price?: number
 
   constructor(
-    firebaseID: string = "",
+    firebaseID: string = '',
     category: string,
     sector: string,
     date: Date,
     price: number
   ) {
-    super();
-    this.firebaseID = firebaseID;
-    this.category = category;
-    this.date = date;
-    this.sector = sector;
-    this.price = price;
+    super()
+    this.firebaseID = firebaseID
+    this.category = category
+    this.date = date
+    this.sector = sector
+    this.price = price
   }
 }
