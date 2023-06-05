@@ -32,7 +32,7 @@ export class NeutralizationCoefficient implements Entity {
     startDate?: Date,
     endDate?: Date
   ) {
-    super()
+    // super()
     this.firebaseID = firebaseID
     this.type = type
     this.cityCoefficient = cityCoefficient

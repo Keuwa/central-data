@@ -82,25 +82,24 @@ export default function Home() {
   }
 
   const generateHeader = () => {
-    let entity
-    switch (formInfo.entityType) {
-      case 'LocalizationCoefficient':
-        entity = new LocalizationCoefficient()
-        break
-      case 'NeutralizationCoefficient':
-        entity = new NeutralizationCoefficient()
-        break
-      case 'Rate':
-        entity = new Rate()
-        break
-      case 'Sector':
-        entity = new Sector()
-        break
-      default:
-        throw new Error('Class not defined')
-    }
-
-    return entity.getHeader()
+    // let entity
+    // switch (formInfo.entityType) {
+    //   case 'LocalizationCoefficient':
+    //     entity = new LocalizationCoefficient()
+    //     break
+    //   case 'NeutralizationCoefficient':
+    //     entity = new NeutralizationCoefficient()
+    //     break
+    //   case 'Rate':
+    //     entity = new Rate()
+    //     break
+    //   case 'Sector':
+    //     entity = new Sector()
+    //     break
+    //   default:
+    //     throw new Error('Class not defined')
+    // }
+    // return entity.getHeader()
   }
 
   return (
@@ -140,15 +139,15 @@ export default function Home() {
             }
             type="file"
           />
-          <button type="submit" onClick={handleSubmit}>
+          {/* <button type="submit" onClick={handleSubmit}>
             Envoyer
-          </button>
+          </button> */}
         </form>
         <div>
           <h3>Csv header </h3>
-          {generateHeader().map((value, key) => {
+          {/* {generateHeader().map((value, key) => {
             return <span key={key}>{value}; </span>
-          })}
+          })} */}
         </div>
       </main>
     </>
