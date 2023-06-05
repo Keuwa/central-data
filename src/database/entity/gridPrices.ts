@@ -1,17 +1,25 @@
 import CSVParsable from '../CSVParsable'
 import { Entity } from '../entities'
-import City from './city'
 
 export class GridPrices extends CSVParsable implements Entity {
-    firebaseID: string = ''
-    category?: string
-    pricesBySector?: Array<number>
+  firebaseID: string = ''
+  category?: string
+  sector?: string
+  date?: Date
+  price?: number
 
-    
-    constructor(firebaseID: string = '', category: string, pricesBySector: Array<number>) {
-        super()
-        this.firebaseID = firebaseID
-        this.category = category
-        this.pricesBySector = pricesBySector
-    }
+  constructor(
+    firebaseID: string = '',
+    category: string,
+    sector: string,
+    date: Date,
+    price: number
+  ) {
+    super()
+    this.firebaseID = firebaseID
+    this.category = category
+    this.date = date
+    this.sector = sector
+    this.price = price
+  }
 }

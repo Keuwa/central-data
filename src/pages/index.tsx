@@ -9,140 +9,147 @@ import { Sector } from '../database/entity/sector'
 
 const inter = Inter({ subsets: ['latin'] })
 
-
 class EntityType {
-    class: string = 'localizationCoefficient'
-    route: string = 'localizationCoefficients'
-    name: string = 'Coefficient de localisation'
+  class: string = 'localizationCoefficient'
+  route: string = 'localizationCoefficients'
+  name: string = 'Coefficient de localisation'
 }
 
 export default function Home() {
-    const entityTypes: Array<EntityType> = [
-        {
-            class: 'LocalizationCoefficient', 
-            route: 'localizationCoefficients', 
-            name: 'Coefficient de localisation'
-        }, 
-        {
-            class: 'NeutralizationCoefficient', 
-            route: 'neutralizationCoefficients', 
-            name: 'Coefficient de neutralisation'
-        },
-        {
-            class: 'Rate', 
-            route: 'rates', 
-            name: 'Taux'
-        },
-        {
-            class: 'Sector', 
-            route: 'sectors', 
-            name: 'Secteur'
-        },
-        {
-            class: 'GridPrices', 
-            route: 'gridPrices', 
-            name: 'Grille tarifaire'
-        }
-    ]
+  const entityTypes: Array<EntityType> = [
+    {
+      class: 'LocalizationCoefficient',
+      route: 'localizationCoefficients',
+      name: 'Coefficient de localisation',
+    },
+    {
+      class: 'NeutralizationCoefficient',
+      route: 'neutralizationCoefficients',
+      name: 'Coefficient de neutralisation',
+    },
+    {
+      class: 'Rate',
+      route: 'rates',
+      name: 'Taux',
+    },
+    {
+      class: 'Sector',
+      route: 'sectors',
+      name: 'Secteur',
+    },
+    {
+      class: 'GridPrices',
+      route: 'gridPrices',
+      name: 'Grille tarifaire',
+    },
+  ]
 
-    const [formInfo, setFormInfo] = useState({
-        entityType: 'LocalizationCoefficient',
-        date: '',
-        file: '',
+  const [formInfo, setFormInfo] = useState({
+    entityType: 'LocalizationCoefficient',
+    date: '',
+    file: '',
+  })
+
+  const handleSubmit = (e: { target: HTMLInputElement }) => {
+    //todo: check file type
+    const target = e.target as HTMLInputElement
+    if (null === target.files) {
+      alert('Fichier non téléchargé')
+      return
+    }
+    const file = target.files[0]
+    const body = new FormData()
+    body.append('file', file)
+    body.append('date', formInfo.date)
+    body.append('entityType', formInfo.entityType)
+    const route = entityTypes.find(
+      (entity) => formInfo.entityType === entity.class
+    )?.route
+    if (undefined === route) {
+      throw new Error('undefined route')
+    }
+
+    fetch('/api/import', {
+      method: 'POST',
+      body,
     })
+      .then((response) => {
+        console.warn(response)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }
 
-    const handleSubmit = (e: { target: HTMLInputElement }) => {
-        //todo: check file type
-        const target = e.target as HTMLInputElement
-        if(null === target.files){
-            alert('Fichier non téléchargé')
-            return
-        }
-        const file = target.files[0] 
-        const body = new FormData()
-        body.append('file', file)
-        body.append('date', formInfo.date)
-        body.append('entityType', formInfo.entityType)
-        const route =  entityTypes.find(entity => formInfo.entityType === entity.class)?.route
-        if(undefined === route){
-            throw new Error('undefined route')  
-        }
+  const generateHeader = () => {
+    // let entity
+    // switch (formInfo.entityType) {
+    //   case 'LocalizationCoefficient':
+    //     entity = new LocalizationCoefficient()
+    //     break
+    //   case 'NeutralizationCoefficient':
+    //     entity = new NeutralizationCoefficient()
+    //     break
+    //   case 'Rate':
+    //     entity = new Rate()
+    //     break
+    //   case 'Sector':
+    //     entity = new Sector()
+    //     break
+    //   default:
+    //     throw new Error('Class not defined')
+    // }
+    // return entity.getHeader()
+  }
 
-        fetch('/api/import', {
-            method: 'POST',
-            body
-        }).then( response => {
-            console.log(response)
-        }).catch( err => {
-            console.error(err)
-        })
-
-    }
-
-    const generateHeader = () => {
-        let entity
-        switch (formInfo.entityType) {
-        case 'LocalizationCoefficient': 
-            entity = new LocalizationCoefficient()
-            break
-        case 'NeutralizationCoefficient': 
-            entity = new NeutralizationCoefficient()
-            break
-        case 'Rate': 
-            entity = new Rate()
-            break
-        case 'Sector': 
-            entity = new Sector()
-            break
-        default:
-            throw new Error('Class not defined')
-        }
-
-        return entity.getHeader()
-    }
-
-    return (
-        <>
-            <Head>
-                <title>Central data</title>
-                <meta name="description" content="Generated by create next app" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <main className={styles.main}>
-                <form>
-                    <select 
-                        value={formInfo.entityType} 
-                        onChange={(e) => setFormInfo({...formInfo, entityType: e.target.value})}>
-                        {entityTypes.map((value, key)=> {
-                            return (
-                                <option 
-                                    key={key} 
-                                    value={value.class} 
-                                    
-                                >
-                                    {value.name}
-                                </option>
-                            )
-                        })}
-                    </select>
-                    <input
-                        onChange={(e) => setFormInfo({...formInfo, entityType: e.target.value})} 
-                        value={formInfo.date} type="date" 
-                    />
-                    <input 
-                        onChange={(e) => setFormInfo({...formInfo, entityType: e.target.value})} 
-                        type="file" 
-                    />
-                    <button type="submit" onClick={handleSubmit}>Envoyer</button>
-                </form>
-                <div>
-                    <h3>Csv header </h3>
-                    {generateHeader().map((value, key)=> {
-                        return <span key={key}>{value}; </span>
-                    })}
-                </div>
-            </main>
-        </>
-    )
+  return (
+    <>
+      <Head>
+        <title>Central data</title>
+        <meta name="description" content="Generated by create next app" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className={styles.main}>
+        <form>
+          <select
+            value={formInfo.entityType}
+            onChange={(e) =>
+              setFormInfo({ ...formInfo, entityType: e.target.value })
+            }
+          >
+            {entityTypes.map((value, key) => {
+              return (
+                <option key={key} value={value.class}>
+                  {value.name}
+                </option>
+              )
+            })}
+          </select>
+          <input
+            onChange={(e) =>
+              setFormInfo({ ...formInfo, entityType: e.target.value })
+            }
+            value={formInfo.date}
+            type="date"
+          />
+          <input
+            onChange={(e) =>
+              setFormInfo({ ...formInfo, entityType: e.target.value })
+            }
+            type="file"
+          />
+          {/* <button type="submit" onClick={handleSubmit}>
+            Envoyer
+          </button> */}
+        </form>
+        <div>
+          <h3>Csv header </h3>
+          {/* {generateHeader().map((value, key) => {
+            return <span key={key}>{value}; </span>
+          })} */}
+        </div>
+      </main>
+    </>
+  )
 }
