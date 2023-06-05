@@ -18,7 +18,7 @@ if (!firebase.apps.length) {
     //   .setPersistence(firebase.auth.Auth.Persistence.SESSION)
 
     if (process.env.NODE_ENV === 'development') {
-        firebase.firestore().useEmulator('localhost', 8081)
+        firebase.firestore().useEmulator('localhost', 8083)
         firebase.auth().useEmulator('http://localhost:9099')
         firebase.storage().useEmulator('localhost', 9199)
     }

@@ -2,6 +2,9 @@
   "name": "central-data",
   "version": "0.1.0",
   "private": true,
+  "engine": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -20,6 +23,7 @@
     "firebase": "^9.15.0",
     "firebase-admin": "^11.4.0",
     "next": "13.0.7",
+    "nextjs-cors": "^2.1.2",
     "nookies": "^2.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
