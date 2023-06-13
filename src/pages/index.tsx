@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
-import { useState } from 'react'
+import { MouseEventHandler, useState } from 'react'
 import { LocalizationCoefficient } from '../database/entity/localizationCoefficient'
 import { NeutralizationCoefficient } from '../database/entity/neutralizationCoefficient'
 import { Rate } from '../database/entity/rate'
@@ -13,6 +13,12 @@ class EntityType {
   class: string = 'localizationCoefficient'
   route: string = 'localizationCoefficients'
   name: string = 'Coefficient de localisation'
+}
+
+interface IFormInfo {
+  entityType: string;
+  date: string;
+  file?: File;
 }
 
 export default function Home() {
@@ -44,34 +50,41 @@ export default function Home() {
     },
   ]
 
-  const [formInfo, setFormInfo] = useState({
+  const [formInfo, setFormInfo] = useState<IFormInfo>({
     entityType: 'LocalizationCoefficient',
     date: '',
-    file: '',
+    file: undefined,
   })
 
-  const handleSubmit = (e: { target: HTMLInputElement }) => {
+  const handleSubmit = () => {
     //todo: check file type
-    const target = e.target as HTMLInputElement
-    if (null === target.files) {
+    if (null === formInfo.file) {
       alert('Fichier non téléchargé')
       return
     }
-    const file = target.files[0]
+    const file = formInfo.file
     const body = new FormData()
-    body.append('file', file)
+
+    body.append('file', file as Blob)
     body.append('date', formInfo.date)
     body.append('entityType', formInfo.entityType)
-    const route = entityTypes.find(
-      (entity) => formInfo.entityType === entity.class
-    )?.route
-    if (undefined === route) {
-      throw new Error('undefined route')
-    }
+    // const route = entityTypes.find(
+    //   (entity) => formInfo.entityType === entity.class
+    // )?.route
+    // if (undefined === route) {
+    //   throw new Error('undefined route')
+    // }
+
+    var myHeaders = new Headers()
+    myHeaders.append(
+      'Authorization',
+      `Bearer: ${process.env.NEXT_PUBLIC_CENTRAL_API_KEY ?? ''}`
+    )
 
     fetch('/api/import', {
       method: 'POST',
       body,
+      headers: myHeaders,
     })
       .then((response) => {
         console.warn(response)
@@ -127,21 +140,28 @@ export default function Home() {
             })}
           </select>
           <input
-            onChange={(e) =>
-              setFormInfo({ ...formInfo, entityType: e.target.value })
-            }
+            onChange={(e) => setFormInfo({ ...formInfo, date: e.target.value })}
             value={formInfo.date}
             type="date"
           />
           <input
             onChange={(e) =>
-              setFormInfo({ ...formInfo, entityType: e.target.value })
+              setFormInfo({
+                ...formInfo,
+                file: e.target.files && e.target.files[0],
+              })
             }
             type="file"
           />
-          {/* <button type="submit" onClick={handleSubmit}>
+          <button
+            type="submit"
+            onClick={(e) => {
+              e.preventDefault()
+              handleSubmit()
+            }}
+          >
             Envoyer
-          </button> */}
+          </button>
         </form>
         <div>
           <h3>Csv header </h3>

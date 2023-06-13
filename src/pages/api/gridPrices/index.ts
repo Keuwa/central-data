@@ -8,9 +8,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case 'GET':
       let getResult = await new Promise(async (resolve) => {
-        const { date, sector, category } = req.query
+        const { year, sector, category } = req.query
 
-        let data = await getGridPrices(date, sector, category)
+        let data = await getGridPrices(year, sector, category)
         resolve(data)
       })
       res.status(200).json(getResult)
@@ -43,15 +43,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 export async function getGridPrices(
-  date?: string | string[],
+  year?: string | string[],
   sector?: string | string[],
   category?: string | string[]
 ): Promise<Array<GridPrices>> {
   let gridPrices: Array<GridPrices> = []
   try {
     const db = firebaseAdmin.firestore()
-    let ref = db.collection('gridPrices')
-    let query = ref.orderBy('date')
+    let ref = db.collection('GridPrices')
+    let query = ref.orderBy('year')
+    console.log({
+      sector,
+      year,
+      category,
+    })
     if (sector) {
       if (typeof sector === 'string') {
         query = query.where('sector', '==', sector)
@@ -66,20 +71,21 @@ export async function getGridPrices(
         query = query.where('category', 'in', category)
       }
     }
-    if (date) {
-      if (typeof date === 'string') {
-        query = query.where('date', '==', decodeURI(date))
+    if (year) {
+      if (typeof year === 'string') {
+        query = query.where('year', '==', decodeURI(year))
       } else {
         query = query.where(
-          'date',
+          'year',
           'in',
-          date.map((element) => decodeURI(element))
+          year.map((element) => decodeURI(element))
         )
       }
     }
 
     const snapshot = await query.get()
 
+    console.log(query)
     snapshot.forEach((doc) => {
       let gridPrice: GridPrices = {
         firebaseID: doc.id,
@@ -101,7 +107,7 @@ export function addGridPrices(gridPrices: GridPrices) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('gridPrices')
+      .collection('GridPrices')
       .withConverter(converter())
       .add(gridPrices)
       .then((data) => {
@@ -117,7 +123,7 @@ export function updateGridPrices(gridPrices: GridPrices) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('gridPrices')
+      .collection('GridPrices')
       .doc(gridPrices.firebaseID)
       .withConverter(converter())
       .update(gridPrices)
@@ -134,7 +140,7 @@ export function deleteGridPrices(gridPrices: GridPrices) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('gridPrices')
+      .collection('GridPrices')
       .doc(gridPrices.firebaseID)
       .withConverter(converter())
       .delete()
