@@ -73,7 +73,7 @@ export async function getRates(
   let rates: Array<Rate> = []
   try {
     const db = firebaseAdmin.firestore()
-    let ref = db.collection('rates')
+    let ref = db.collection('Rates')
     let query = ref.orderBy('year')
     if (cityInseeCode) {
       if (typeof cityInseeCode === 'string') {
@@ -119,7 +119,7 @@ export function addRate(rate: Rate) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('rates')
+      .collection('Rates')
       .withConverter(converter())
       .add(rate)
       .then((data) => {
@@ -135,7 +135,7 @@ export function updateRates(rate: Rate) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('rates')
+      .collection('Rates')
       .doc(rate.firebaseID)
       .withConverter(converter())
       .update(rate)
@@ -152,7 +152,7 @@ export function deleteRates(rate: Rate) {
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('rates')
+      .collection('Rates')
       .doc(rate.firebaseID)
       .withConverter(converter())
       .delete()

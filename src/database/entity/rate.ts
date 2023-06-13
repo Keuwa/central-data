@@ -9,27 +9,31 @@ interface CollectivityRate {
 }
 export class Rate extends CSVParsable implements Entity {
   firebaseID: string = ''
-  year?: string
+  year?: number
   tax?: string
   city?: string
   collectivities?: {
     [key: string]: CollectivityRate;
   }
 
-  constructor(
-    firebaseID: string = '',
-    year: string,
-    tax: string,
-    city: string,
-    collectivities?: {
-      [key: string]: CollectivityRate;
-    }
-  ) {
+  constructor(data?: Partial<Rate>) {
     super()
-    this.firebaseID = firebaseID
-    this.year = year
-    this.tax = tax
-    this.city = city
-    this.collectivities = collectivities
+    Object.assign(this, data)
   }
+  // constructor(
+  //   firebaseID: string = '',
+  //   year: string,
+  //   tax: string,
+  //   city: string,
+  //   collectivities?: {
+  //     [key: string]: CollectivityRate;
+  //   }
+  // ) {
+  //   super()
+  //   this.firebaseID = firebaseID
+  //   this.year = year
+  //   this.tax = tax
+  //   this.city = city
+  //   this.collectivities = collectivities
+  // }
 }

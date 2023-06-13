@@ -47,7 +47,7 @@ export async function getNeutralisationCoefficients(
   let neutralizationCoefficients: Array<NeutralizationCoefficient> = []
   try {
     const db = firebaseAdmin.firestore()
-    let ref = db.collection('neutralizationCoefficients')
+    let ref = db.collection('NeutralizationCoefficients')
     let query = ref.orderBy('startDate')
     if (cityInseeCode) {
       if (typeof cityInseeCode === 'string') {
@@ -89,7 +89,7 @@ export function addNeutralisationCoefficient(
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('neutralizationCoefficients')
+      .collection('NeutralizationCoefficients')
       .withConverter(converter())
       .add(neutralisationCoefficient)
       .then((data) => {
@@ -107,7 +107,7 @@ export function updateNeutralisationCoefficients(
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('neutralizationCoefficients')
+      .collection('NeutralizationCoefficients')
       .doc(neutralisationCoefficient.firebaseID)
       .withConverter(converter())
       .update(neutralisationCoefficient)
@@ -126,7 +126,7 @@ export function deleteNeutralisationCoefficients(
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('neutralizationCoefficients')
+      .collection('NeutralizationCoefficients')
       .doc(neutralisationCoefficient.firebaseID)
       .withConverter(converter())
       .delete()

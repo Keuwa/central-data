@@ -46,7 +46,7 @@ export async function getLocalizationCoefficients(): Promise<
   let localizationCoefficients: Array<LocalizationCoefficient> = []
   try {
     const db = firebaseAdmin.firestore()
-    const snapshot = await db.collection('localizationCoefficients').get()
+    const snapshot = await db.collection('LocalizationCoefficients').get()
     snapshot.forEach((doc) => {
       let localizationCoefficient: LocalizationCoefficient = {
         firebaseID: doc.id,
@@ -67,7 +67,7 @@ export function addLocalizationCoefficient(
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('localizationCoefficients')
+      .collection('LocalizationCoefficients')
       .withConverter(converter())
       .add(localizationCoefficient)
       .then((data) => {
@@ -85,7 +85,7 @@ export function updateLocalizationCoefficients(
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('localizationCoefficients')
+      .collection('LocalizationCoefficients')
       .doc(localizationCoefficient.firebaseID)
       .withConverter(converter())
       .update(localizationCoefficient)
@@ -104,7 +104,7 @@ export function deleteLocalizationCoefficients(
   return new Promise((resolve, reject) => {
     firebaseAdmin
       .firestore()
-      .collection('localizationCoefficients')
+      .collection('LocalizationCoefficients')
       .doc(localizationCoefficient.firebaseID)
       .withConverter(converter())
       .delete()

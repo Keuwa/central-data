@@ -19,26 +19,24 @@ export default class EntityFactory {
     let entity
     switch (entityType) {
       case 'LocalizationCoefficient':
-        entity = new LocalizationCoefficient()
+        entity = new LocalizationCoefficient(data)
         break
       case 'NeutralizationCoefficient':
-        entity = new NeutralizationCoefficient()
+        entity = new NeutralizationCoefficient(data)
         break
-      // case 'Rate':
-      //     entity = new Rate()
-      //     break
-      // case 'Sector':
-      //     entity = new Sector()
-      //     break
-      // case 'GridPrices':
-      //     entity = new GridPrices()
-      //     break
+      case 'Rate':
+        entity = new Rate(data)
+        break
+      case 'Sector':
+        entity = new Sector(data)
+        break
+      case 'GridPrices':
+        entity = new GridPrices(data)
+        break
       default:
         throw new Error('Class not defined')
     }
-    if (null !== data) {
-      Object.assign(entity, data)
-    }
+
     return entity
   }
 }
